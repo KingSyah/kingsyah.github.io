@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kingsyah — Engineer · Space · Economy · World</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+
+<!-- Background layers -->
+<canvas id="starfield"></canvas>
+<div class="grid-overlay"></div>
+<div class="scan-line"></div>
+
+<!-- Custom cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- ═══════════════════════════════ NAV ═══════════════════════════════ -->
+<nav>
+  <a href="#" class="nav-logo">kings<span>yah</span>.io</a>
+  <ul class="nav-links">
+    <li><a href="#domains">Domains</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#about">About</a></li>
+  </ul>
+  <a href="https://github.com/kingsyah" target="_blank" class="nav-github">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
+    </svg>
+    GitHub
+  </a>
+</nav>
+
+<!-- ═══════════════════════════════ TICKER ══════════════════════════════ -->
+<div class="ticker-wrapper">
+  <div class="ticker">
+    <span class="ticker-item"><span class="dot"></span>Computer Engineering</span>
+    <span class="ticker-item"><span class="dot"></span>Space Exploration</span>
+    <span class="ticker-item"><span class="dot"></span>Global Economy</span>
+    <span class="ticker-item"><span class="dot"></span>World Events</span>
+    <span class="ticker-item"><span class="dot"></span>Open Source</span>
+    <span class="ticker-item"><span class="dot"></span>Systems Architecture</span>
+    <span class="ticker-item"><span class="dot"></span>Orbital Mechanics</span>
+    <span class="ticker-item"><span class="dot"></span>Market Analysis</span>
+    <span class="ticker-item"><span class="dot"></span>Computer Engineering</span>
+    <span class="ticker-item"><span class="dot"></span>Space Exploration</span>
+    <span class="ticker-item"><span class="dot"></span>Global Economy</span>
+    <span class="ticker-item"><span class="dot"></span>World Events</span>
+    <span class="ticker-item"><span class="dot"></span>Open Source</span>
+    <span class="ticker-item"><span class="dot"></span>Systems Architecture</span>
+    <span class="ticker-item"><span class="dot"></span>Orbital Mechanics</span>
+    <span class="ticker-item"><span class="dot"></span>Market Analysis</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ HERO ════════════════════════════════ -->
+<div class="hero-wrap">
+  <div class="hero">
+    <p class="hero-eyebrow">// init kingsyah.github.io — v2.0</p>
+    <h1 class="hero-title">
+      Engineering<br>
+      <span class="line2">the Future</span><br>
+      <span class="highlight">One Bit</span> at a Time
+    </h1>
+    <p class="hero-desc">
+      Exploring the intersection of computer engineering, space frontier,
+      economic systems, and global dynamics. Building tools that matter.
+    </p>
+    <div class="hero-cta">
+      <a href="https://github.com/kingsyah" target="_blank" class="btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
+        </svg>
+        View on GitHub
+      </a>
+      <a href="#domains" class="btn-outline">Explore Domains →</a>
+    </div>
+
+    <div class="orbit-container">
+      <div class="orbit-ring"><div class="orbit-dot"></div></div>
+      <div class="orbit-ring"><div class="orbit-dot"></div></div>
+      <div class="orbit-ring"><div class="orbit-dot"></div></div>
+      <div class="orbit-center">🌍</div>
+    </div>
+  </div>
+
+  <div class="status-bar">
+    <div class="status-item">
+      <div class="status-num"><span>∞</span></div>
+      <div class="status-label">Curiosity</div>
+    </div>
+    <div class="status-item">
+      <div class="status-num">4</div>
+      <div class="status-label">Domains</div>
+    </div>
+    <div class="status-item">
+      <div class="status-num">01</div>
+      <div class="status-label">Mission</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ DOMAINS ══════════════════════════════ -->
+<section id="domains">
+  <p class="section-label reveal">// core domains</p>
+  <h2 class="section-title reveal">Fields of <em>Inquiry</em></h2>
+
+  <div class="domains-grid reveal">
+    <div class="domain-card">
+      <p class="card-number">01 — Engineering</p>
+      <span class="card-icon">⚙️</span>
+      <h3 class="card-title">Computer Engineering</h3>
+      <p class="card-desc">From silicon to software — hardware architecture, embedded systems, algorithms, and the beautiful complexity of computing machines.</p>
+      <div class="card-tags">
+        <span class="tag tag-blue">Systems</span>
+        <span class="tag tag-blue">Embedded</span>
+        <span class="tag tag-blue">Algorithms</span>
+        <span class="tag tag-blue">Hardware</span>
+      </div>
+    </div>
+    <div class="domain-card">
+      <p class="card-number">02 — Space</p>
+      <span class="card-icon">🚀</span>
+      <h3 class="card-title">Space Frontier</h3>
+      <p class="card-desc">The cosmos as the next engineering challenge — orbital mechanics, satellite tech, propulsion systems, and humanity's push beyond the atmosphere.</p>
+      <div class="card-tags">
+        <span class="tag tag-teal">Orbital</span>
+        <span class="tag tag-teal">Propulsion</span>
+        <span class="tag tag-teal">Satellite</span>
+        <span class="tag tag-teal">Astro</span>
+      </div>
+    </div>
+    <div class="domain-card">
+      <p class="card-number">03 — Economy</p>
+      <span class="card-icon">📈</span>
+      <h3 class="card-title">Economic Systems</h3>
+      <p class="card-desc">Markets as complex adaptive systems — macro trends, fintech disruption, decentralized finance, and the data-driven study of value exchange.</p>
+      <div class="card-tags">
+        <span class="tag tag-orange">Macro</span>
+        <span class="tag tag-orange">FinTech</span>
+        <span class="tag tag-orange">DeFi</span>
+        <span class="tag tag-orange">Analysis</span>
+      </div>
+    </div>
+    <div class="domain-card">
+      <p class="card-number">04 — World</p>
+      <span class="card-icon">🌐</span>
+      <h3 class="card-title">Global Events</h3>
+      <p class="card-desc">Geopolitics, climate, humanitarian shifts, and the cascading effects that reshape civilization — observed through a systems-thinking lens.</p>
+      <div class="card-tags">
+        <span class="tag tag-purple">Geopolitics</span>
+        <span class="tag tag-purple">Climate</span>
+        <span class="tag tag-purple">Society</span>
+        <span class="tag tag-purple">Futures</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════ PROJECTS ══════════════════════════════ -->
+<section id="projects">
+  <p class="section-label reveal">// live applications</p>
+  <h2 class="section-title reveal">App <em>Launcher</em></h2>
+
+  <!-- Aplikasi Umum -->
+  <p class="proj-cat-label reveal">📱 Aplikasi Umum</p>
+  <div class="projects-list reveal">
+    <a href="https://kingsyah.github.io/inventaris/" target="_blank" class="project-row">
+      <span class="project-index">📦</span>
+      <div><div class="project-name">Inventaris</div><div class="project-sub">Manage inventory system</div></div>
+      <span class="project-arrow">→</span>
+    </a>
+    <a href="https://kingsyah.github.io/lab-logbook/" target="_blank" class="project-row">
+      <span class="project-index">📖</span>
+      <div><div class="project-name">Lab Logbook</div><div class="project-sub">Laboratory activity tracker</div></div>
+      <span class="project-arrow">→</span>
+    </a>
+    <a href="https://kingsyah.github.io/RuangLab/" target="_blank" class="project-row">
+      <span class="project-index">🔬</span>
+      <div><div class="project-name">Ruang Lab</div><div class="project-sub">Laboratory room management</div></div>
+      <span class="project-arrow">→</span>
+    </a>
+    <a href="https://kingsyah.github.io/IK/" target="_blank" class="project-row">
+      <span class="project-index">📋</span>
+      <div><div class="project-name">Instruksi Kerja</div><div class="project-sub">Work instruction management</div></div>
+      <span class="project-arrow">→</span>
+    </a>
+    <a href="https://kingsyah.github.io/Logbook-Barang/" target="_blank" class="project-row">
+      <span class="project-index">📝</span>
+      <div><div class="project-name">Logbook Barang</div><div class="project-sub">Item tracking and logging system</div></div>
+      <span class="project-arrow">→</span>
+    </a>
+    <a href="https://kingsyah.github.io/LabDok/" target="_blank" class="project-row">
+      <span class="project-index">📄</span>
+      <div><div class="project-name">LabDok</div><div class="project-sub">Laboratory document management</div></div>
+      <span class="project-arrow">→</span>
+    </a>
+    <a href="https://kingsyah.github.io/PCD-Tools/" target="_blank" class="project-row">
+      <span class="project-index">🛠️</span>
+      <div><div class="project-name">PCD Tools</div><div class="project-sub">Digital Image Processing Tool</div></div>
+      <span class="project-arrow">→</span>
+    </a>
+    <a href="https://kingsyah.github.io/BarangLab/" target="_blank" class="project-row">
+      <span class="project-index">📊</span>
+      <div><div class="project-name">Logbook Barang Laboratorium</div><div class="project-sub">Managemen Barang Laboratorium v2.0</div></div>
+      <span class="project-arrow">→</span>
+    </a>
+    <a href="https://kingsyah.codeberg.page/InventoryLab/" target="_blank" class="project-row">
+      <span class="project-index">📦</span>
+      <div><div class="project-name">Inventaris Laboratorium v2</div><div class="project-sub">Managemen Barang Laboratorium v2</div></div>
+      <span class="project-arrow">→</span>
+    </a>
+  </div>
+
+  <!-- Tools -->
+  <p class="proj-cat-label reveal" style="margin-top:48px">🛠️ Tools</p>
+  <div class="projects-list reveal">
+    <a href="https://kingsyah.github.io/AppPromptGenerator/" target="_blank" class="project-row">
+      <span class="project-index">🤖</span>
+      <div><div class="project-name">Prompt Generator</div><div class="project-sub">Generate AI prompts automatically</div></div>
+      <span class="project-arrow">→</span>
+    </a>
+    <a href="https://kingsyah.github.io/JSON-Editor/" target="_blank" class="project-row">
+      <span class="project-index">📝</span>
+      <div><div class="project-name">JSON Editor</div><div class="project-sub">Edit and format JSON data</div></div>
+      <span class="project-arrow">→</span>
+    </a>
+    <a href="https://kingsyah.github.io/JSONL-Converter/" target="_blank" class="project-row">
+      <span class="project-index">🔄</span>
+      <div><div class="project-name">JSONL Converter</div><div class="project-sub">Convert JSON to JSONL format</div></div>
+      <span class="project-arrow">→</span>
+    </a>
+    <a href="https://kingsyah.github.io/FIX/" target="_blank" class="project-row">
+      <span class="project-index">🎓</span>
+      <div><div class="project-name">Perbaikan Gelar</div><div class="project-sub">Academic degree correction tool</div></div>
+      <span class="project-arrow">→</span>
+    </a>
+    <a href="https://kingsyah.github.io/Editor-Data-Dosen/" target="_blank" class="project-row">
+      <span class="project-index">👨‍🏫</span>
+      <div><div class="project-name">Editor Data Dosen</div><div class="project-sub">Faculty data management editor</div></div>
+      <span class="project-arrow">→</span>
+    </a>
+    <a href="https://kingsyah.github.io/Tools/index.html" target="_blank" class="project-row">
+      <span class="project-index">⚙️</span>
+      <div><div class="project-name">Button Editor</div><div class="project-sub">Add new menu buttons easily without coding</div></div>
+      <span class="project-arrow">→</span>
+    </a>
+    <a href="https://kingsyah.github.io/DiskonTools/" target="_blank" class="project-row">
+      <span class="project-index">📱</span>
+      <div><div class="project-name">Kalkulator Diskon</div><div class="project-sub">Kalkulator hitung diskon dan selisih tahun</div></div>
+      <span class="project-arrow">→</span>
+    </a>
+    <a href="https://kingsyah.github.io/KalkulatorJamker/" target="_blank" class="project-row">
+      <span class="project-index">📱</span>
+      <div><div class="project-name">Kalkulator Jam Kerja</div><div class="project-sub">Menghitung jam kerja praktikum</div></div>
+      <span class="project-arrow">→</span>
+    </a>
+    <a href="https://kingsyah.github.io/UniConverter/" target="_blank" class="project-row">
+      <span class="project-index">🧮</span>
+      <div><div class="project-name">Arcane Converter</div><div class="project-sub">Fantasy measurement systems</div></div>
+      <span class="project-arrow">→</span>
+    </a>
+    <a href="https://kingsyah.github.io/kalbiz/" target="_blank" class="project-row">
+      <span class="project-index">📊</span>
+      <div><div class="project-name">Kalkulator Bisnis</div><div class="project-sub">Menghitung BEP (Break Even Point)</div></div>
+      <span class="project-arrow">→</span>
+    </a>
+  </div>
+
+  <!-- Aplikasi EVE -->
+  <p class="proj-cat-label reveal" style="margin-top:48px">🚀 Aplikasi EVE</p>
+  <div class="projects-list reveal">
+    <a href="https://kingsyah.github.io/evetimeinfo/" target="_blank" class="project-row">
+      <span class="project-index">⏰</span>
+      <div><div class="project-name">EVE Time Info</div><div class="project-sub">EVE Online time tracker</div></div>
+      <span class="project-arrow">→</span>
+    </a>
+    <a href="https://kingsyah.github.io/ISK-Tracker/" target="_blank" class="project-row">
+      <span class="project-index">💰</span>
+      <div><div class="project-name">ISK Tracker</div><div class="project-sub">Track ISK earnings in EVE</div></div>
+      <span class="project-arrow">→</span>
+    </a>
+    <a href="https://kingsyah.github.io/KalkulatorYield/" target="_blank" class="project-row">
+      <span class="project-index">🧮</span>
+      <div><div class="project-name">Kalkulator Yield</div><div class="project-sub">Menghitung Yield Timer</div></div>
+      <span class="project-arrow">→</span>
+    </a>
+    <a href="https://kingsyah.github.io/exploNexus/" target="_blank" class="project-row">
+      <span class="project-index">🚀</span>
+      <div><div class="project-name">Nebula Nexus</div><div class="project-sub">Exploration &amp; gas harvesting tools</div></div>
+      <span class="project-arrow">→</span>
+    </a>
+  </div>
+
+  <!-- Games -->
+  <p class="proj-cat-label reveal" style="margin-top:48px">🎮 Games</p>
+  <div class="projects-list reveal">
+    <a href="https://kingsyah.github.io/bloklist/" target="_blank" class="project-row">
+      <span class="project-index">🧩</span>
+      <div><div class="project-name">Bloklist</div><div class="project-sub">Block puzzle game</div></div>
+      <span class="project-arrow">→</span>
+    </a>
+    <a href="https://kingsyah.github.io/Emoji-Merge/" target="_blank" class="project-row">
+      <span class="project-index">🍎</span>
+      <div><div class="project-name">Fruit Fusion</div><div class="project-sub">Merge fruits and create new combinations</div></div>
+      <span class="project-arrow">→</span>
+    </a>
+    <a href="https://kingsyah.github.io/ularkun/" target="_blank" class="project-row">
+      <span class="project-index">🐍</span>
+      <div><div class="project-name">Ularkun</div><div class="project-sub">Classic snake game adventure</div></div>
+      <span class="project-arrow">→</span>
+    </a>
+  </div>
+
+  <div style="margin-top:48px" class="reveal">
+    <a href="https://kingsyah.github.io/AppPages/" target="_blank" class="btn-outline">
+      View All Apps at AppPages →
+    </a>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════ ABOUT ════════════════════════════════ -->
+<div class="about-strip" id="about">
+  <div class="about-inner">
+    <div class="about-text reveal">
+      <p class="section-label">// whoami</p>
+      <h2>Builder. Thinker.<br>Observer.</h2>
+      <p>A computer engineer with an insatiable curiosity for the boundaries of what's technically possible — from nanosecond-level hardware operations to the trillion-dollar movements of global markets.</p>
+      <p>Based in Indonesia. Building in public. Thinking out loud.</p>
+      <br>
+      <a href="https://github.com/kingsyah" target="_blank" class="btn-primary" style="display:inline-flex; width:fit-content">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
+        </svg>
+        @kingsyah on GitHub
+      </a>
+    </div>
+
+    <div class="skills-grid reveal">
+      <div class="skill-item">
+        <div class="skill-name">C / C++ / Assembly</div>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:88%"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-name">Python / Data</div>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:82%"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-name">Web &amp; Systems</div>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:75%"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-name">Orbital / Physics</div>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:65%"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-name">Econ Analysis</div>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:70%"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-name">Geopolitics</div>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:78%"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ FOOTER ═══════════════════════════════ -->
+<footer>
+  <div class="footer-left">
+    <strong>kingsyah.github.io</strong> — Built with HTML. Hosted on GitHub Pages.<br>
+    <span style="font-size:10px">© 2025 kingsyah. Open source. MIT License.</span>
+  </div>
+  <div class="footer-links">
+    <a href="https://github.com/kingsyah" target="_blank">GitHub</a>
+    <a href="#domains">Domains</a>
+    <a href="#projects">Projects</a>
+    <a href="#about">About</a>
+  </div>
+</footer>
+
+<script src="assets/main.js"></script>
+</body>
+</html>
