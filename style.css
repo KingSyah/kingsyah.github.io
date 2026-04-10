@@ -231,55 +231,95 @@ section {
 }
 
 /* ═══════════════════════════════════════
-   WORK / APP GRID — compact flowing layout
+   APP TABLE — modern list layout
    ═══════════════════════════════════════ */
 .work { border-top: 1px solid var(--border); }
 
-/* Auto-fit grid: categories with more items naturally span more width */
-.app-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 0;
+.app-table-wrap {
   margin-bottom: 40px;
-}
-
-.app-group {
-  padding: 20px 24px;
   border: 1px solid var(--border);
-  border-radius: 4px;
-  background: rgba(14, 18, 25, 0.5);
-  transition: border-color 0.3s ease, background 0.3s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: transform;
-}
-.app-group:hover {
-  border-color: rgba(255,255,255,0.1);
-  background: rgba(14, 18, 25, 0.8);
-  transform: translateY(-2px);
+  border-radius: 6px;
+  overflow: hidden;
+  background: rgba(14, 18, 25, 0.4);
 }
 
-.app-group-label {
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 10px;
-  padding-bottom: 8px;
+.app-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.app-table thead tr {
   border-bottom: 1px solid var(--border);
 }
 
-.app-item {
-  display: block;
-  font-size: 13px;
+.app-table th {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
   color: var(--muted);
-  text-decoration: none;
-  padding: 4px 0;
-  transition: color 0.2s ease, padding-left 0.2s ease;
-  line-height: 1.5;
+  text-align: left;
+  padding: 14px 20px;
+  background: rgba(14, 18, 25, 0.6);
 }
-.app-item:hover {
+
+.app-table td {
+  padding: 0;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  transition: background 0.2s ease;
+}
+
+.app-table tbody tr {
+  transition: background 0.2s ease;
+}
+.app-table tbody tr:hover {
+  background: rgba(74, 143, 255, 0.03);
+}
+
+.app-table td.col-num {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: rgba(255,255,255,0.12);
+  padding: 11px 20px;
+  width: 50px;
+  text-align: center;
+  letter-spacing: 0.05em;
+}
+
+.app-table td:nth-child(2) {
+  padding: 11px 20px;
+}
+
+.app-table td a {
   color: var(--text);
-  padding-left: 6px;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  display: block;
+}
+.app-table td a:hover {
+  color: var(--accent);
+}
+
+.col-cat {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  padding: 11px 20px;
+  white-space: nowrap;
+}
+
+.cat-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--dot);
+  margin-right: 8px;
+  vertical-align: middle;
+  opacity: 0.7;
 }
 
 .all-apps-link {
@@ -324,38 +364,6 @@ section {
   font-size: 11px;
   letter-spacing: 0.06em;
   color: var(--muted);
-}
-
-/* ── NEWS TABS ── */
-.news-tabs {
-  display: flex;
-  gap: 4px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-}
-
-.news-tab {
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--muted);
-  background: none;
-  border: 1px solid var(--border);
-  padding: 7px 16px;
-  border-radius: 3px;
-  cursor: none;
-  transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: transform;
-}
-.news-tab:hover {
-  color: var(--text);
-  border-color: rgba(255,255,255,0.12);
-}
-.news-tab.active {
-  color: var(--accent);
-  border-color: rgba(74,143,255,0.35);
-  background: rgba(74,143,255,0.06);
 }
 
 /* ── NEWS SLIDESHOW ── */
@@ -563,35 +571,12 @@ footer {
     font-size: clamp(28px, 8vw, 40px);
   }
 
-  /* App grid: single column, more compact cards */
-  .app-grid {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-
-  .app-group {
-    padding: 16px 18px;
-    border-radius: 6px;
-  }
-
-  .app-group-label {
-    margin-bottom: 8px;
-    padding-bottom: 6px;
-  }
-
-  .app-item {
-    font-size: 13px;
-    padding: 3px 0;
-  }
-
-  .news-tabs {
-    gap: 6px;
-    margin-bottom: 16px;
-  }
-  .news-tab {
-    font-size: 10px;
-    padding: 6px 12px;
-  }
+  /* App table: smaller padding */
+  .app-table th { padding: 10px 14px; font-size: 9px; }
+  .app-table td.col-num { padding: 9px 14px; width: 36px; font-size: 10px; }
+  .app-table td:nth-child(2) { padding: 9px 14px; }
+  .col-cat { padding: 9px 14px; font-size: 9px; }
+  .cat-dot { width: 5px; height: 5px; margin-right: 6px; }
 
   .about-grid {
     grid-template-columns: 1fr;
