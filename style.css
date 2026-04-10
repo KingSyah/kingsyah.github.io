@@ -1,5 +1,5 @@
 /* ============================================================
-   kingsyah.github.io — style.css  (v2 — smooth + dominant orbit)
+   kingsyah.github.io — style.css  (v4 — minimal app table)
    ============================================================ */
 
 :root {
@@ -120,7 +120,7 @@ section {
 }
 
 /* ═══════════════════════════════════════
-   HERO — orbit dominates on desktop
+   HERO
    ═══════════════════════════════════════ */
 
 .hero {
@@ -145,7 +145,6 @@ section {
   animation: fadeIn 1.8s 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
-/* push hero text above canvas */
 .hero > *:not(#orbitCanvas) { position: relative; z-index: 1; }
 
 .hero-label {
@@ -231,96 +230,72 @@ section {
 }
 
 /* ═══════════════════════════════════════
-   APP TABLE — modern list layout
+   APP DIRECTORY — minimal grouped list
    ═══════════════════════════════════════ */
 .work { border-top: 1px solid var(--border); }
 
-.app-table-wrap {
-  margin-bottom: 40px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  overflow: hidden;
-  background: rgba(14, 18, 25, 0.4);
+.app-directory {
+  margin-bottom: 36px;
 }
 
-.app-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 14px;
+.app-group {
+  margin-bottom: 28px;
 }
+.app-group:last-child { margin-bottom: 0; }
 
-.app-table thead tr {
-  border-bottom: 1px solid var(--border);
-}
-
-.app-table th {
-  font-family: var(--mono);
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--muted);
-  text-align: left;
-  padding: 14px 20px;
-  background: rgba(14, 18, 25, 0.6);
-}
-
-.app-table td {
-  padding: 0;
-  border-bottom: 1px solid rgba(255,255,255,0.03);
-  transition: background 0.2s ease;
-}
-
-.app-table tbody tr {
-  transition: background 0.2s ease;
-}
-.app-table tbody tr:hover {
-  background: rgba(74, 143, 255, 0.03);
-}
-
-.app-table td.col-num {
-  font-family: var(--mono);
-  font-size: 11px;
-  color: rgba(255,255,255,0.12);
-  padding: 11px 20px;
-  width: 50px;
-  text-align: center;
-  letter-spacing: 0.05em;
-}
-
-.app-table td:nth-child(2) {
-  padding: 11px 20px;
-}
-
-.app-table td a {
-  color: var(--text);
-  text-decoration: none;
-  transition: color 0.2s ease;
-  display: block;
-}
-.app-table td a:hover {
-  color: var(--accent);
-}
-
-.col-cat {
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  color: var(--muted);
-  padding: 11px 20px;
-  white-space: nowrap;
+.app-group-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
 }
 
 .cat-dot {
-  display: inline-block;
   width: 6px;
   height: 6px;
   border-radius: 50%;
   background: var(--dot);
-  margin-right: 8px;
-  vertical-align: middle;
-  opacity: 0.7;
+  flex-shrink: 0;
 }
+
+.app-group-name {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.app-group-count {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: rgba(255,255,255,0.15);
+  margin-left: auto;
+}
+
+.app-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+}
+
+.app-links a {
+  font-size: 14px;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 5px 0;
+  transition: color 0.2s ease;
+  line-height: 1.5;
+}
+.app-links a:hover { color: var(--text); }
+
+.app-links a::after {
+  content: '·';
+  color: rgba(255,255,255,0.1);
+  padding: 0 12px;
+  pointer-events: none;
+}
+.app-links a:last-child::after { content: none; }
 
 .all-apps-link {
   display: inline-block;
@@ -541,7 +516,7 @@ footer {
 }
 
 /* ═══════════════════════════════════════
-   RESPONSIVE — mobile: humble & dynamic
+   RESPONSIVE
    ═══════════════════════════════════════ */
 @media (max-width: 720px) {
   nav {
@@ -552,7 +527,6 @@ footer {
 
   section { padding: 60px 20px; }
 
-  /* Hero: orbit becomes a subtle background accent */
   .hero {
     min-height: 85vh;
     padding-top: 100px;
@@ -571,12 +545,10 @@ footer {
     font-size: clamp(28px, 8vw, 40px);
   }
 
-  /* App table: smaller padding */
-  .app-table th { padding: 10px 14px; font-size: 9px; }
-  .app-table td.col-num { padding: 9px 14px; width: 36px; font-size: 10px; }
-  .app-table td:nth-child(2) { padding: 9px 14px; }
-  .col-cat { padding: 9px 14px; font-size: 9px; }
-  .cat-dot { width: 5px; height: 5px; margin-right: 6px; }
+  /* App directory: tighter */
+  .app-group { margin-bottom: 22px; }
+  .app-links a { font-size: 13px; padding: 4px 0; }
+  .app-links a::after { padding: 0 10px; }
 
   .about-grid {
     grid-template-columns: 1fr;
@@ -590,7 +562,6 @@ footer {
   }
 }
 
-/* ── ULTRA-WIDE: make orbit even bigger ── */
 @media (min-width: 1400px) {
   #orbitCanvas {
     width: 68%;
