@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>kingsyah</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💀</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<canvas id="starfield"></canvas>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">king<span>syah</span></a>
+  <ul class="nav-links">
+    <li><a href="#work">Work</a></li>
+    <li><a href="#news">News</a></li>
+    <li><a href="#about">About</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <canvas id="orbitCanvas"></canvas>
+  <p class="hero-label">Based in Indonesia</p>
+  <h1 class="hero-title">
+    Computer engineer.<br>
+    Space enthusiast.<br>
+    <span class="hero-dim">Building small tools.</span>
+  </h1>
+  <p class="hero-sub">
+    Interested in how systems work — from circuits and code to markets and geopolitics.
+  </p>
+  <div class="hero-cta">
+    <a href="#work" class="btn-ghost">Explore apps ↓</a>
+    <a href="#news" class="btn-text">Latest news →</a>
+  </div>
+</section>
+
+<!-- WORK / APP LAUNCHER -->
+<section id="work" class="work">
+  <h2 class="section-heading reveal">Apps</h2>
+
+  <div class="app-grid reveal">
+
+    <!-- Lab & Inventory (6) -->
+    <div class="app-group">
+      <p class="app-group-label">Lab &amp; Inventory</p>
+      <a href="https://invlab.netlify.app/" target="_blank" class="app-item">Inventaris</a>
+      <a href="https://kingsyah.github.io/lab-logbook/" target="_blank" class="app-item">Lab Logbook</a>
+      <a href="https://kingsyah.github.io/RuangLab/" target="_blank" class="app-item">Ruang Lab</a>
+      <a href="https://kingsyah.github.io/IK/" target="_blank" class="app-item">Instruksi Kerja</a>
+      <a href="https://kingsyah.github.io/Logbook-Barang/" target="_blank" class="app-item">Logbook Barang</a>
+      <a href="https://kingsyah.github.io/LabDok/" target="_blank" class="app-item">LabDok</a>
+    </div>
+
+    <!-- Tools (12) -->
+    <div class="app-group">
+      <p class="app-group-label">Tools</p>
+      <a href="https://kingsyah.github.io/PCD-Tools/" target="_blank" class="app-item">PCD Tools</a>
+      <a href="https://kingsyah.github.io/AppPromptGenerator/" target="_blank" class="app-item">Prompt Generator</a>
+      <a href="https://kingsyah.github.io/JSON-Editor/" target="_blank" class="app-item">JSON Editor</a>
+      <a href="https://kingsyah.github.io/JSONL-Converter/" target="_blank" class="app-item">JSONL Converter</a>
+      <a href="https://kingsyah.github.io/FIX/" target="_blank" class="app-item">Perbaikan Gelar</a>
+      <a href="https://kingsyah.github.io/Editor-Data-Dosen/" target="_blank" class="app-item">Editor Data Dosen</a>
+      <a href="https://kingsyah.github.io/Tools/index.html" target="_blank" class="app-item">Button Editor</a>
+      <a href="https://kingsyah.github.io/DiskonTools/" target="_blank" class="app-item">Kalkulator Diskon</a>
+      <a href="https://kingsyah.github.io/KalkulatorJamker/" target="_blank" class="app-item">Kalkulator Jam Kerja</a>
+      <a href="https://kingsyah.github.io/UniConverter/" target="_blank" class="app-item">Arcane Converter</a>
+      <a href="https://kingsyah.github.io/kalbiz/" target="_blank" class="app-item">Kalkulator Bisnis</a>
+      <a href="https://kingsyah.github.io/tookind/" target="_blank" class="app-item">Token Secret Generator</a>
+    </div>
+
+    <!-- EVE Online (4) -->
+    <div class="app-group">
+      <p class="app-group-label">EVE Online</p>
+      <a href="https://kingsyah.github.io/evetimeinfo/" target="_blank" class="app-item">EVE Time Info</a>
+      <a href="https://kingsyah.github.io/ISK-Tracker/" target="_blank" class="app-item">ISK Tracker</a>
+      <a href="https://kingsyah.github.io/KalkulatorYield/" target="_blank" class="app-item">Kalkulator Yield</a>
+      <a href="https://kingsyah.github.io/exploNexus/" target="_blank" class="app-item">Nebula Nexus</a>
+    </div>
+
+    <!-- Games (3) -->
+    <div class="app-group">
+      <p class="app-group-label">Games</p>
+      <a href="https://kingsyah.github.io/bloklist/" target="_blank" class="app-item">Bloklist</a>
+      <a href="https://kingsyah.github.io/Emoji-Merge/" target="_blank" class="app-item">Fruit Fusion</a>
+      <a href="https://kingsyah.github.io/ularkun/" target="_blank" class="app-item">Ularkun</a>
+    </div>
+
+  </div>
+
+  <a href="https://kingsyah.github.io/AppPages/" target="_blank" class="all-apps-link reveal">
+    All apps → AppPages
+  </a>
+</section>
+
+<!-- NEWS — multi-feed tabs -->
+<section id="news" class="news">
+  <h2 class="section-heading reveal">World</h2>
+
+  <div class="news-tabs reveal">
+    <button class="news-tab active" data-feed="tech">Tech</button>
+    <button class="news-tab" data-feed="space">Space</button>
+    <button class="news-tab" data-feed="id">Indonesia</button>
+    <button class="news-tab" data-feed="world">Headlines</button>
+  </div>
+
+  <div class="slideshow" id="slideshow">
+    <div class="slide-track" id="slideTrack"></div>
+    <div class="slide-nav">
+      <button class="slide-btn" id="slidePrev" aria-label="Previous">←</button>
+      <span class="slide-counter" id="slideCounter"></span>
+      <button class="slide-btn" id="slideNext" aria-label="Next">→</button>
+      <button class="slide-play" id="slidePlay" aria-label="Pause">⏸</button>
+    </div>
+  </div>
+  <div class="news-loading" id="newsLoading">fetching<span class="blink">_</span></div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="about reveal">
+  <div class="about-grid">
+    <div>
+      <h2 class="section-heading">About</h2>
+      <p>Computer engineer based in Banda Aceh. I build small tools for research, daily needs, and the occasional fun experiment.</p>
+      <p>Curious about space and the stars, I also keep an eye on global dynamics—especially economics—and how large systems evolve over time. I'm fascinated by how the universe moves and changes from one moment to the next.</p>
+      <p>This space is a collection of random explorations, so don't expect anything too spectacular—just some rural engineering from a quiet corner of the universe.</p>
+      <p>"Syah" (meaning "king") originates from Persia and appears in KBBI with the same meaning. It has been used by the rulers of the Perlak Kingdom since around 840 AD. "Raja" is the Indonesian term derived from Indian languages, while "king" is the English equivalent. Combined, "KingSyah" can be interpreted as "King of Kings."</p>
+    </div>
+    <div class="interest-list">
+      <p class="app-group-label">Interests</p>
+      <span>Computer Engineering</span>
+      <span>Space Technology</span>
+      <span>Economics</span>
+      <span>Geopolitics</span>
+      <span>Open Source</span>
+      <span>Universe</span>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span>kingsyah.github.io</span>
+  <span>© <span id="footerYear"></span></span>
+</footer>
+
+<script src="main.js"></script>
+</body>
+</html>

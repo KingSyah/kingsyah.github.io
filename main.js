@@ -1,0 +1,440 @@
+/* ============================================================
+   kingsyah.github.io — main.js  (v3 — multi-feed news)
+   ============================================================ */
+
+/* ── STARFIELD ── */
+const canvas = document.getElementById('starfield');
+const ctx    = canvas.getContext('2d');
+let stars = [], W, H;
+
+function resize() {
+  W = canvas.width  = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+
+function initStars() {
+  stars = [];
+  const count = window.innerWidth < 720 ? 80 : 160;
+  for (let i = 0; i < count; i++) {
+    stars.push({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      r: Math.random() * 1.2,
+      o: Math.random() * 0.6 + 0.1,
+      twinkle: Math.random() * Math.PI * 2
+    });
+  }
+}
+
+function drawStars() {
+  ctx.clearRect(0, 0, W, H);
+  for (let i = 0; i < stars.length; i++) {
+    const s = stars[i];
+    s.twinkle += 0.012;
+    const opacity = s.o * (0.6 + 0.4 * Math.sin(s.twinkle));
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(200, 220, 255, ${opacity})`;
+    ctx.fill();
+  }
+  requestAnimationFrame(drawStars);
+}
+
+window.addEventListener('resize', () => { resize(); initStars(); });
+resize();
+initStars();
+requestAnimationFrame(drawStars);
+
+/* ── CURSOR ── */
+const cursorEl = document.getElementById('cursor');
+const ring     = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+const isMobile = window.innerWidth < 720;
+
+if (isMobile) {
+  cursorEl.style.display = 'none';
+  ring.style.display = 'none';
+  document.body.style.cursor = 'auto';
+}
+
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+
+function animateCursor() {
+  if (isMobile) return;
+  rx += (mx - rx) * 0.1;
+  ry += (my - ry) * 0.1;
+  cursorEl.style.left = mx + 'px';
+  cursorEl.style.top  = my + 'px';
+  ring.style.left     = rx + 'px';
+  ring.style.top      = ry + 'px';
+  requestAnimationFrame(animateCursor);
+}
+animateCursor();
+
+/* ── ORBIT SYSTEM ── */
+(function () {
+  const c   = document.getElementById('orbitCanvas');
+  const ctx = c.getContext('2d');
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const isDesktop = window.innerWidth >= 720;
+  const scale = isDesktop ? 1.15 : 0.85;
+
+  const PLANETS = [
+    { a: 0.0,  orb: 90,  spd: 0.0007,  r: 5,  color: '#6a9fd8' },
+    { a: 1.2,  orb: 148, spd: 0.00045, r: 8,  color: '#4ac98a' },
+    { a: 2.7,  orb: 210, spd: 0.00028, r: 6,  color: '#e07b54' },
+    { a: 0.8,  orb: 275, spd: 0.00013, r: 9,  color: '#a374d5' },
+  ].map(p => ({ ...p, orb: p.orb * scale, r: p.r * scale }));
+
+  const trails = PLANETS.map(() => []);
+  let W, H, cx, cy, raf;
+  let mouseOffX = 0, mouseOffY = 0, targetOffX = 0, targetOffY = 0;
+
+  function resize() {
+    W = c.width  = c.offsetWidth  * dpr;
+    H = c.height = c.offsetHeight * dpr;
+    cx = W * 0.6;
+    cy = H * 0.5;
+  }
+
+  if (isDesktop) {
+    document.addEventListener('mousemove', e => {
+      targetOffX = (e.clientX / window.innerWidth - 0.5) * 2 * 18 * dpr;
+      targetOffY = (e.clientY / window.innerHeight - 0.5) * 2 * 12 * dpr;
+    });
+  }
+
+  function hexAlpha(hex, a) {
+    return `rgba(${parseInt(hex.slice(1,3),16)},${parseInt(hex.slice(3,5),16)},${parseInt(hex.slice(5,7),16)},${a})`;
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    mouseOffX += (targetOffX - mouseOffX) * 0.04;
+    mouseOffY += (targetOffY - mouseOffY) * 0.04;
+    const ox = cx + mouseOffX, oy = cy + mouseOffY;
+
+    for (let i = 0; i < PLANETS.length; i++) {
+      ctx.beginPath();
+      ctx.arc(ox, oy, PLANETS[i].orb * dpr, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+
+    const sg = ctx.createRadialGradient(ox, oy, 0, ox, oy, 64 * dpr);
+    sg.addColorStop(0, 'rgba(210,175,80,0.5)');
+    sg.addColorStop(0.5, 'rgba(210,175,80,0.12)');
+    sg.addColorStop(1, 'rgba(210,175,80,0)');
+    ctx.beginPath();
+    ctx.arc(ox, oy, 64 * dpr, 0, Math.PI * 2);
+    ctx.fillStyle = sg;
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(ox, oy, 18 * dpr, 0, Math.PI * 2);
+    ctx.fillStyle = '#d4aa55';
+    ctx.fill();
+
+    for (let i = 0; i < PLANETS.length; i++) {
+      const p = PLANETS[i];
+      p.a += p.spd;
+      const px = ox + Math.cos(p.a) * p.orb * dpr;
+      const py = oy + Math.sin(p.a) * p.orb * dpr;
+      trails[i].push({ x: px, y: py });
+      if (trails[i].length > 50) trails[i].shift();
+
+      const trail = trails[i];
+      for (let t = 1; t < trail.length; t++) {
+        ctx.beginPath();
+        ctx.moveTo(trail[t-1].x, trail[t-1].y);
+        ctx.lineTo(trail[t].x, trail[t].y);
+        ctx.strokeStyle = hexAlpha(p.color, (t / trail.length) * 0.28);
+        ctx.lineWidth = p.r * dpr * 0.5;
+        ctx.stroke();
+      }
+
+      const glowR = p.r * 3 * dpr;
+      const pg = ctx.createRadialGradient(px, py, 0, px, py, glowR);
+      pg.addColorStop(0, hexAlpha(p.color, 0.5));
+      pg.addColorStop(1, hexAlpha(p.color, 0));
+      ctx.beginPath();
+      ctx.arc(px, py, glowR, 0, Math.PI * 2);
+      ctx.fillStyle = pg;
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.arc(px, py, p.r * dpr, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.fill();
+    }
+    raf = requestAnimationFrame(draw);
+  }
+
+  resize();
+  window.addEventListener('resize', resize);
+  const hero = document.querySelector('.hero');
+  new IntersectionObserver(entries => {
+    entries[0].isIntersecting
+      ? (raf = requestAnimationFrame(draw))
+      : cancelAnimationFrame(raf);
+  }, { threshold: 0 }).observe(hero);
+})();
+
+/* ── FOOTER YEAR ── */
+document.getElementById('footerYear').textContent = new Date().getFullYear();
+
+/* ══════════════════════════════════════════
+   NEWS — multi-feed system
+   ══════════════════════════════════════════ */
+
+const FEEDS = {
+  tech: {
+    label: 'Tech',
+    urls: [
+      'https://feeds.arstechnica.com/arstechnica/index',
+      'https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml',
+    ],
+    source: 'Ars Technica / NYT Tech'
+  },
+  space: {
+    label: 'Space',
+    urls: [
+      'https://www.nasa.gov/rss/dyn/breaking_news.rss',
+      'https://www.space.com/feeds/all',
+    ],
+    source: 'NASA / Space.com'
+  },
+  id: {
+    label: 'Indonesia',
+    urls: [
+      'https://www.cnnindonesia.com/nasional/rss',
+      'https://feed.liputan6.com/rss/news',
+    ],
+    source: 'CNN Indonesia / Liputan6'
+  },
+  world: {
+    label: 'Headlines',
+    urls: [
+      'https://feeds.bbci.co.uk/news/world/rss.xml',
+      'https://rss.nytimes.com/services/xml/rss/nyt/World.xml',
+    ],
+    source: 'BBC / NYT World'
+  }
+};
+
+const PROXIES = [
+  u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+  u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+];
+
+/* ── Slideshow state ── */
+let slides   = [];
+let current  = 0;
+let playing  = true;
+let timer    = null;
+const DELAY  = 6000;
+let progress = 0;
+let progTimer = null;
+let activeFeed = 'tech';
+let feedCache  = {};  // cache parsed items per category
+
+async function fetchFeed(url) {
+  for (const proxy of PROXIES) {
+    try {
+      const r = await fetch(proxy(url), { signal: AbortSignal.timeout(8000) });
+      if (r.ok) return r.text();
+    } catch {}
+  }
+  return null;
+}
+
+function parseRSS(xml, defaultSource) {
+  const doc = new DOMParser().parseFromString(xml, 'text/xml');
+  const channelTitle = doc.querySelector('channel > title')?.textContent || defaultSource;
+  return [...doc.querySelectorAll('item')].slice(0, 8).map(item => {
+    const rawDesc = item.querySelector('description')?.textContent || '';
+    const desc    = rawDesc.replace(/<[^>]+>/g, '').trim();
+    return {
+      title:  item.querySelector('title')?.textContent?.trim() || '',
+      link:   item.querySelector('link')?.textContent?.trim()  || '#',
+      desc:   desc || 'No summary available.',
+      date:   item.querySelector('pubDate')?.textContent || '',
+      source: channelTitle,
+    };
+  }).filter(i => i.title);
+}
+
+function timeAgo(dateStr) {
+  if (!dateStr) return '';
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const h = Math.floor(diff / 36e5);
+  const d = Math.floor(diff / 864e5);
+  if (h < 1)  return 'just now';
+  if (h < 24) return h + 'h ago';
+  return d + 'd ago';
+}
+
+function showSlide(idx) {
+  document.querySelectorAll('.slide').forEach((s, i) => {
+    s.classList.toggle('active', i === idx);
+  });
+  document.getElementById('slideCounter').textContent = `${idx + 1} / ${slides.length}`;
+  progress = 0;
+  const bar = document.querySelector('.slide-progress-bar');
+  if (bar) bar.style.transform = 'scaleX(0)';
+}
+
+function startProgress() {
+  clearInterval(progTimer);
+  progress = 0;
+  progTimer = setInterval(() => {
+    progress = Math.min(progress + (100 / (DELAY / 80)), 100);
+    const bar = document.querySelector('.slide-progress-bar');
+    if (bar) bar.style.transform = `scaleX(${progress / 100})`;
+  }, 80);
+}
+
+function startAuto() {
+  clearInterval(timer);
+  startProgress();
+  timer = setInterval(() => {
+    current = (current + 1) % slides.length;
+    showSlide(current);
+    startProgress();
+  }, DELAY);
+}
+
+function stopAuto() {
+  clearInterval(timer);
+  clearInterval(progTimer);
+}
+
+function buildSlideshow(items) {
+  slides = items;
+  const track = document.getElementById('slideTrack');
+
+  track.innerHTML = items.map(item => `
+    <div class="slide">
+      <div class="slide-source">${item.source} · ${timeAgo(item.date)}</div>
+      <div class="slide-title">${item.title}</div>
+      <div class="slide-desc">${item.desc}</div>
+      <a href="${item.link}" target="_blank" rel="noopener" class="slide-link">Read full story ↗</a>
+      <div class="slide-progress"><div class="slide-progress-bar"></div></div>
+    </div>
+  `).join('');
+
+  current = 0;
+  showSlide(0);
+  document.getElementById('slideshow').classList.add('ready');
+  document.getElementById('newsLoading').style.display = 'none';
+
+  if (playing) startAuto();
+}
+
+async function loadFeed(key) {
+  const feed = FEEDS[key];
+  if (!feed) return;
+
+  activeFeed = key;
+  stopAuto();
+
+  // Update active tab
+  document.querySelectorAll('.news-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.feed === key);
+  });
+
+  // Check cache
+  if (feedCache[key]) {
+    buildSlideshow(feedCache[key]);
+    return;
+  }
+
+  // Show loading
+  document.getElementById('newsLoading').style.display = '';
+  document.getElementById('newsLoading').innerHTML = 'fetching<span class="blink">_</span>';
+  document.getElementById('slideshow').classList.remove('ready');
+
+  // Fetch all URLs for this category
+  let allItems = [];
+  for (const url of feed.urls) {
+    const xml = await fetchFeed(url);
+    if (xml) {
+      allItems = allItems.concat(parseRSS(xml, feed.source));
+    }
+  }
+
+  // Deduplicate by title, sort by date
+  const seen = new Set();
+  allItems = allItems.filter(item => {
+    const key = item.title.toLowerCase().slice(0, 60);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+  allItems.sort((a, b) => new Date(b.date) - new Date(a.date));
+  allItems = allItems.slice(0, 8);
+
+  if (!allItems.length) {
+    document.getElementById('newsLoading').innerHTML =
+      '<span class="news-error">Feed unavailable.</span>';
+    return;
+  }
+
+  feedCache[key] = allItems;
+  buildSlideshow(allItems);
+}
+
+/* ── Tab click handlers ── */
+document.querySelectorAll('.news-tab').forEach(tab => {
+  tab.addEventListener('click', () => loadFeed(tab.dataset.feed));
+});
+
+/* ── Nav buttons ── */
+document.getElementById('slidePrev').addEventListener('click', () => {
+  if (!slides.length) return;
+  current = (current - 1 + slides.length) % slides.length;
+  showSlide(current);
+  if (playing) startAuto();
+});
+
+document.getElementById('slideNext').addEventListener('click', () => {
+  if (!slides.length) return;
+  current = (current + 1) % slides.length;
+  showSlide(current);
+  if (playing) startAuto();
+});
+
+document.getElementById('slidePlay').addEventListener('click', () => {
+  const btn = document.getElementById('slidePlay');
+  playing = !playing;
+  btn.textContent = playing ? '⏸' : '▶';
+  playing ? startAuto() : stopAuto();
+});
+
+/* ── Hover pause ── */
+const slideshow = document.getElementById('slideshow');
+slideshow.addEventListener('mouseenter', stopAuto);
+slideshow.addEventListener('mouseleave', () => { if (playing) startAuto(); });
+
+/* ── Load first feed when section enters viewport ── */
+const newsObserver = new IntersectionObserver(entries => {
+  if (!entries[0].isIntersecting) return;
+  newsObserver.disconnect();
+  loadFeed('tech');  // default tab
+}, { threshold: 0.1 });
+
+const newsSection = document.getElementById('news');
+if (newsSection) newsObserver.observe(newsSection);
+
+/* ── SCROLL REVEAL ── */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      io.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.08 });
+
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
