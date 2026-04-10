@@ -185,43 +185,23 @@ animateCursor();
 document.getElementById('footerYear').textContent = new Date().getFullYear();
 
 /* ══════════════════════════════════════════
-   NEWS — multi-feed system
+   NEWS — mixed random feed (all sources)
    ══════════════════════════════════════════ */
 
-const FEEDS = {
-  tech: {
-    label: 'Tech',
-    urls: [
-      'https://feeds.arstechnica.com/arstechnica/index',
-      'https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml',
-    ],
-    source: 'Ars Technica / NYT Tech'
-  },
-  space: {
-    label: 'Space',
-    urls: [
-      'https://www.nasa.gov/rss/dyn/breaking_news.rss',
-      'https://www.space.com/feeds/all',
-    ],
-    source: 'NASA / Space.com'
-  },
-  id: {
-    label: 'Indonesia',
-    urls: [
-      'https://www.cnnindonesia.com/nasional/rss',
-      'https://feed.liputan6.com/rss/news',
-    ],
-    source: 'CNN Indonesia / Liputan6'
-  },
-  world: {
-    label: 'Headlines',
-    urls: [
-      'https://feeds.bbci.co.uk/news/world/rss.xml',
-      'https://rss.nytimes.com/services/xml/rss/nyt/World.xml',
-    ],
-    source: 'BBC / NYT World'
-  }
-};
+const ALL_FEEDS = [
+  // Tech
+  'https://feeds.arstechnica.com/arstechnica/index',
+  'https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml',
+  // Space
+  'https://www.nasa.gov/rss/dyn/breaking_news.rss',
+  'https://www.space.com/feeds/all',
+  // Indonesia
+  'https://www.cnnindonesia.com/nasional/rss',
+  'https://feed.liputan6.com/rss/news',
+  // World headlines
+  'https://feeds.bbci.co.uk/news/world/rss.xml',
+  'https://rss.nytimes.com/services/xml/rss/nyt/World.xml',
+];
 
 const PROXIES = [
   u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
@@ -236,8 +216,6 @@ let timer    = null;
 const DELAY  = 6000;
 let progress = 0;
 let progTimer = null;
-let activeFeed = 'tech';
-let feedCache  = {};  // cache parsed items per category
 
 async function fetchFeed(url) {
   for (const proxy of PROXIES) {
@@ -249,10 +227,10 @@ async function fetchFeed(url) {
   return null;
 }
 
-function parseRSS(xml, defaultSource) {
+function parseRSS(xml) {
   const doc = new DOMParser().parseFromString(xml, 'text/xml');
-  const channelTitle = doc.querySelector('channel > title')?.textContent || defaultSource;
-  return [...doc.querySelectorAll('item')].slice(0, 8).map(item => {
+  const channelTitle = doc.querySelector('channel > title')?.textContent || 'Unknown';
+  return [...doc.querySelectorAll('item')].slice(0, 6).map(item => {
     const rawDesc = item.querySelector('description')?.textContent || '';
     const desc    = rawDesc.replace(/<[^>]+>/g, '').trim();
     return {
@@ -263,6 +241,14 @@ function parseRSS(xml, defaultSource) {
       source: channelTitle,
     };
   }).filter(i => i.title);
+}
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
 }
 
 function timeAgo(dateStr) {
@@ -332,63 +318,40 @@ function buildSlideshow(items) {
   if (playing) startAuto();
 }
 
-async function loadFeed(key) {
-  const feed = FEEDS[key];
-  if (!feed) return;
+/* ── Fetch all feeds in parallel, mix randomly ── */
+async function loadAllFeeds() {
+  const results = await Promise.allSettled(
+    ALL_FEEDS.map(url => fetchFeed(url))
+  );
 
-  activeFeed = key;
-  stopAuto();
-
-  // Update active tab
-  document.querySelectorAll('.news-tab').forEach(t => {
-    t.classList.toggle('active', t.dataset.feed === key);
-  });
-
-  // Check cache
-  if (feedCache[key]) {
-    buildSlideshow(feedCache[key]);
-    return;
-  }
-
-  // Show loading
-  document.getElementById('newsLoading').style.display = '';
-  document.getElementById('newsLoading').innerHTML = 'fetching<span class="blink">_</span>';
-  document.getElementById('slideshow').classList.remove('ready');
-
-  // Fetch all URLs for this category
   let allItems = [];
-  for (const url of feed.urls) {
-    const xml = await fetchFeed(url);
-    if (xml) {
-      allItems = allItems.concat(parseRSS(xml, feed.source));
+  for (const r of results) {
+    if (r.status === 'fulfilled' && r.value) {
+      allItems = allItems.concat(parseRSS(r.value));
     }
   }
 
-  // Deduplicate by title, sort by date
+  if (!allItems.length) {
+    document.getElementById('newsLoading').innerHTML =
+      '<span class="news-error">No feeds available.</span>';
+    return;
+  }
+
+  // Deduplicate by title similarity
   const seen = new Set();
   allItems = allItems.filter(item => {
-    const key = item.title.toLowerCase().slice(0, 60);
+    const key = item.title.toLowerCase().replace(/\s+/g, ' ').slice(0, 50);
     if (seen.has(key)) return false;
     seen.add(key);
     return true;
   });
-  allItems.sort((a, b) => new Date(b.date) - new Date(a.date));
-  allItems = allItems.slice(0, 8);
 
-  if (!allItems.length) {
-    document.getElementById('newsLoading').innerHTML =
-      '<span class="news-error">Feed unavailable.</span>';
-    return;
-  }
+  // Shuffle for random order, cap at 12
+  shuffle(allItems);
+  allItems = allItems.slice(0, 12);
 
-  feedCache[key] = allItems;
   buildSlideshow(allItems);
 }
-
-/* ── Tab click handlers ── */
-document.querySelectorAll('.news-tab').forEach(tab => {
-  tab.addEventListener('click', () => loadFeed(tab.dataset.feed));
-});
 
 /* ── Nav buttons ── */
 document.getElementById('slidePrev').addEventListener('click', () => {
@@ -417,11 +380,11 @@ const slideshow = document.getElementById('slideshow');
 slideshow.addEventListener('mouseenter', stopAuto);
 slideshow.addEventListener('mouseleave', () => { if (playing) startAuto(); });
 
-/* ── Load first feed when section enters viewport ── */
+/* ── Load when section enters viewport ── */
 const newsObserver = new IntersectionObserver(entries => {
   if (!entries[0].isIntersecting) return;
   newsObserver.disconnect();
-  loadFeed('tech');  // default tab
+  loadAllFeeds();
 }, { threshold: 0.1 });
 
 const newsSection = document.getElementById('news');
