@@ -204,8 +204,10 @@ const ALL_FEEDS = [
 ];
 
 const PROXIES = [
-  u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
-  u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+  // codetabs — follows redirects, works for all feeds
+  u => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
+  // allorigins /get — returns JSON {contents: "..."}
+  u => `https://api.allorigins.win/get?url=${encodeURIComponent(u)}`,
 ];
 
 /* ── Slideshow state ── */
@@ -220,8 +222,14 @@ let progTimer = null;
 async function fetchFeed(url) {
   for (const proxy of PROXIES) {
     try {
-      const r = await fetch(proxy(url), { signal: AbortSignal.timeout(8000) });
-      if (r.ok) return r.text();
+      const r = await fetch(proxy(url), { signal: AbortSignal.timeout(10000), redirect: 'follow' });
+      if (!r.ok) continue;
+      let text = await r.text();
+      // allorigins /get returns JSON with contents field
+      if (text.startsWith('{')) {
+        try { text = JSON.parse(text).contents || ''; } catch {}
+      }
+      if (text.includes('<')) return text;
     } catch {}
   }
   return null;
