@@ -183,17 +183,11 @@ animateCursor();
     for (let i = 0; i < PLANETS.length; i++) {
       ctx.beginPath();
       ctx.arc(ox, oy, PLANETS[i].orb * dpr, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(255,255,255,0.10)';
-      ctx.lineWidth = 1.2;
-      ctx.setLineDash([4, 8]);
+      ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+      ctx.lineWidth = 0.8;
+      ctx.setLineDash([3, 10]);
       ctx.stroke();
       ctx.setLineDash([]);
-      // Outer glow
-      ctx.beginPath();
-      ctx.arc(ox, oy, PLANETS[i].orb * dpr, 0, Math.PI * 2);
-      ctx.strokeStyle = hexAlpha(PLANETS[i].color, 0.06);
-      ctx.lineWidth = 6;
-      ctx.stroke();
     }
 
     const sg = ctx.createRadialGradient(ox, oy, 0, ox, oy, 64 * dpr);
