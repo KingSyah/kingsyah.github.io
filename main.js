@@ -14,14 +14,17 @@ function resize() {
 
 function initStars() {
   stars = [];
-  const count = window.innerWidth < 720 ? 80 : 160;
+  const count = window.innerWidth < 720 ? 100 : 220;
   for (let i = 0; i < count; i++) {
     stars.push({
       x: Math.random() * W,
       y: Math.random() * H,
-      r: Math.random() * 1.2,
-      o: Math.random() * 0.6 + 0.1,
-      twinkle: Math.random() * Math.PI * 2
+      r: Math.random() * 1.8 + 0.3,
+      o: Math.random() * 0.5 + 0.2,
+      twinkle: Math.random() * Math.PI * 2,
+      twinkleSpeed: Math.random() * 0.03 + 0.008,
+      // Some stars are brighter
+      bright: Math.random() < 0.15
     });
   }
 }
@@ -30,14 +33,77 @@ function drawStars() {
   ctx.clearRect(0, 0, W, H);
   for (let i = 0; i < stars.length; i++) {
     const s = stars[i];
-    s.twinkle += 0.012;
-    const opacity = s.o * (0.6 + 0.4 * Math.sin(s.twinkle));
+    s.twinkle += s.twinkleSpeed;
+    const pulse = s.bright ? (0.3 + 0.7 * Math.abs(Math.sin(s.twinkle))) : (0.6 + 0.4 * Math.sin(s.twinkle));
+    const opacity = s.o * pulse;
     ctx.beginPath();
     ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
     ctx.fillStyle = `rgba(200, 220, 255, ${opacity})`;
     ctx.fill();
+    // Bright stars get a glow
+    if (s.bright && opacity > 0.45) {
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r * 3, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(180, 200, 255, ${opacity * 0.15})`;
+      ctx.fill();
+    }
   }
+  drawMeteors();
   requestAnimationFrame(drawStars);
+}
+
+/* ── METEORS ── */
+let meteors = [];
+
+function spawnMeteor() {
+  const x = Math.random() * W * 0.7;
+  const y = Math.random() * H * 0.4;
+  const angle = Math.PI * 0.15 + Math.random() * 0.3; // ~25-45 deg
+  const speed = 8 + Math.random() * 6;
+  const len = 60 + Math.random() * 80;
+  meteors.push({
+    x, y,
+    vx: Math.cos(angle) * speed,
+    vy: Math.sin(angle) * speed,
+    life: 1,
+    decay: 0.015 + Math.random() * 0.01,
+    len,
+    width: 1 + Math.random() * 1.5
+  });
+}
+
+function drawMeteors() {
+  for (let i = meteors.length - 1; i >= 0; i--) {
+    const m = meteors[i];
+    m.x += m.vx;
+    m.y += m.vy;
+    m.life -= m.decay;
+    if (m.life <= 0) { meteors.splice(i, 1); continue; }
+
+    const tailX = m.x - m.vx * (m.len / (Math.sqrt(m.vx*m.vx + m.vy*m.vy)));
+    const tailY = m.y - m.vy * (m.len / (Math.sqrt(m.vx*m.vx + m.vy*m.vy)));
+
+    const grad = ctx.createLinearGradient(m.x, m.y, tailX, tailY);
+    grad.addColorStop(0, `rgba(255, 255, 255, ${m.life * 0.9})`);
+    grad.addColorStop(0.3, `rgba(180, 210, 255, ${m.life * 0.5})`);
+    grad.addColorStop(1, `rgba(100, 150, 255, 0)`);
+
+    ctx.beginPath();
+    ctx.moveTo(m.x, m.y);
+    ctx.lineTo(tailX, tailY);
+    ctx.strokeStyle = grad;
+    ctx.lineWidth = m.width;
+    ctx.lineCap = 'round';
+    ctx.stroke();
+
+    // Head glow
+    ctx.beginPath();
+    ctx.arc(m.x, m.y, m.width * 2.5, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255, 255, 255, ${m.life * 0.3})`;
+    ctx.fill();
+  }
+  // Spawn new meteors randomly (~every 2-5 seconds)
+  if (Math.random() < 0.004) spawnMeteor();
 }
 
 window.addEventListener('resize', () => { resize(); initStars(); });
@@ -117,8 +183,16 @@ animateCursor();
     for (let i = 0; i < PLANETS.length; i++) {
       ctx.beginPath();
       ctx.arc(ox, oy, PLANETS[i].orb * dpr, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(255,255,255,0.04)';
-      ctx.lineWidth = 1;
+      ctx.strokeStyle = 'rgba(255,255,255,0.10)';
+      ctx.lineWidth = 1.2;
+      ctx.setLineDash([4, 8]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      // Outer glow
+      ctx.beginPath();
+      ctx.arc(ox, oy, PLANETS[i].orb * dpr, 0, Math.PI * 2);
+      ctx.strokeStyle = hexAlpha(PLANETS[i].color, 0.06);
+      ctx.lineWidth = 6;
       ctx.stroke();
     }
 
