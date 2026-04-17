@@ -31,7 +31,7 @@ body {
   position: fixed;
   inset: 0;
   z-index: 0;
-  opacity: 0.5;
+  opacity: 0.7;
   pointer-events: none;
 }
 
@@ -79,8 +79,38 @@ nav {
   letter-spacing: 0.05em;
   color: var(--text);
   text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
-.nav-logo span { color: var(--green); }
+.nav-logo span:not(.nav-crown) {
+  background: linear-gradient(90deg, var(--green), var(--accent), #a374d5, var(--green));
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 3s linear infinite;
+}
+.nav-crown {
+  display: inline-block;
+  animation: crownBob 2s ease-in-out infinite;
+  font-style: normal;
+  -webkit-text-fill-color: initial;
+  background: none;
+  -webkit-background-clip: initial;
+  background-clip: initial;
+}
+.nav-crown:last-child { animation-delay: 0.4s; }
+
+@keyframes crownBob {
+  0%, 100% { transform: translateY(0) rotate(-5deg); }
+  50%      { transform: translateY(-3px) rotate(5deg); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
 
 .nav-links {
   display: flex;
