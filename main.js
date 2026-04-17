@@ -6,6 +6,8 @@
 const canvas = document.getElementById('starfield');
 const ctx    = canvas.getContext('2d');
 let stars = [], W, H;
+let starRaf = null;
+let starVisible = true;
 
 function resize() {
   W = canvas.width  = window.innerWidth;
@@ -23,7 +25,6 @@ function initStars() {
       o: Math.random() * 0.5 + 0.2,
       twinkle: Math.random() * Math.PI * 2,
       twinkleSpeed: Math.random() * 0.03 + 0.008,
-      // Some stars are brighter
       bright: Math.random() < 0.15
     });
   }
@@ -40,7 +41,6 @@ function drawStars() {
     ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
     ctx.fillStyle = `rgba(200, 220, 255, ${opacity})`;
     ctx.fill();
-    // Bright stars get a glow
     if (s.bright && opacity > 0.45) {
       ctx.beginPath();
       ctx.arc(s.x, s.y, s.r * 3, 0, Math.PI * 2);
@@ -49,7 +49,16 @@ function drawStars() {
     }
   }
   drawMeteors();
-  requestAnimationFrame(drawStars);
+  if (starVisible) starRaf = requestAnimationFrame(drawStars);
+}
+
+// Pause starfield when hero not visible
+const heroEl = document.querySelector('.hero');
+if (heroEl) {
+  new IntersectionObserver(entries => {
+    starVisible = entries[0].isIntersecting;
+    if (starVisible && !starRaf) starRaf = requestAnimationFrame(drawStars);
+  }, { threshold: 0 }).observe(heroEl);
 }
 
 /* ── METEORS ── */
@@ -58,7 +67,7 @@ let meteors = [];
 function spawnMeteor() {
   const x = Math.random() * W * 0.7;
   const y = Math.random() * H * 0.4;
-  const angle = Math.PI * 0.15 + Math.random() * 0.3; // ~25-45 deg
+  const angle = Math.PI * 0.15 + Math.random() * 0.3;
   const speed = 8 + Math.random() * 6;
   const len = 60 + Math.random() * 80;
   meteors.push({
@@ -80,36 +89,30 @@ function drawMeteors() {
     m.life -= m.decay;
     if (m.life <= 0) { meteors.splice(i, 1); continue; }
 
-    const tailX = m.x - m.vx * (m.len / (Math.sqrt(m.vx*m.vx + m.vy*m.vy)));
-    const tailY = m.y - m.vy * (m.len / (Math.sqrt(m.vx*m.vx + m.vy*m.vy)));
-
-    const grad = ctx.createLinearGradient(m.x, m.y, tailX, tailY);
-    grad.addColorStop(0, `rgba(255, 255, 255, ${m.life * 0.9})`);
-    grad.addColorStop(0.3, `rgba(180, 210, 255, ${m.life * 0.5})`);
-    grad.addColorStop(1, `rgba(100, 150, 255, 0)`);
+    const invSpeed = m.len / Math.sqrt(m.vx * m.vx + m.vy * m.vy);
+    const tailX = m.x - m.vx * invSpeed;
+    const tailY = m.y - m.vy * invSpeed;
 
     ctx.beginPath();
     ctx.moveTo(m.x, m.y);
     ctx.lineTo(tailX, tailY);
-    ctx.strokeStyle = grad;
+    ctx.strokeStyle = `rgba(180, 210, 255, ${m.life * 0.6})`;
     ctx.lineWidth = m.width;
     ctx.lineCap = 'round';
     ctx.stroke();
 
-    // Head glow
     ctx.beginPath();
     ctx.arc(m.x, m.y, m.width * 2.5, 0, Math.PI * 2);
     ctx.fillStyle = `rgba(255, 255, 255, ${m.life * 0.3})`;
     ctx.fill();
   }
-  // Spawn new meteors randomly (~every 2-5 seconds)
   if (Math.random() < 0.004) spawnMeteor();
 }
 
 window.addEventListener('resize', () => { resize(); initStars(); });
 resize();
 initStars();
-requestAnimationFrame(drawStars);
+starRaf = requestAnimationFrame(drawStars);
 
 /* ── CURSOR ── */
 const cursorEl = document.getElementById('cursor');
