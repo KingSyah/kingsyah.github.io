@@ -83,7 +83,7 @@ nav {
   align-items: center;
   gap: 4px;
 }
-.nav-logo span:not(.nav-crown) {
+.nav-shimmer {
   background: linear-gradient(90deg, var(--green), var(--accent), #a374d5, var(--green));
   background-size: 200% auto;
   -webkit-background-clip: text;
@@ -95,10 +95,6 @@ nav {
   display: inline-block;
   animation: crownBob 2s ease-in-out infinite;
   font-style: normal;
-  -webkit-text-fill-color: initial;
-  background: none;
-  -webkit-background-clip: initial;
-  background-clip: initial;
 }
 .nav-crown:last-child { animation-delay: 0.4s; }
 
