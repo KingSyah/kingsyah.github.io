@@ -7,7 +7,6 @@ const canvas = document.getElementById('starfield');
 const ctx    = canvas.getContext('2d');
 let stars = [], W, H;
 let starRaf = null;
-let starVisible = true;
 
 function resize() {
   W = canvas.width  = window.innerWidth;
@@ -49,17 +48,12 @@ function drawStars() {
     }
   }
   drawMeteors();
-  if (starVisible) starRaf = requestAnimationFrame(drawStars);
+  starRaf = requestAnimationFrame(drawStars);
 }
 
-// Pause starfield when hero not visible
-const heroEl = document.querySelector('.hero');
-if (heroEl) {
-  new IntersectionObserver(entries => {
-    starVisible = entries[0].isIntersecting;
-    if (starVisible && !starRaf) starRaf = requestAnimationFrame(drawStars);
-  }, { threshold: 0 }).observe(heroEl);
-}
+// Starfield always animates — it's position: fixed and always visible.
+// IntersectionObserver removed to fix mobile bug where stars/meteors
+// would disappear after scroll-down then scroll-back-up.
 
 /* ── METEORS ── */
 let meteors = [];
