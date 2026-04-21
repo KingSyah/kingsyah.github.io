@@ -628,6 +628,12 @@ footer {
   object-fit: contain;
   display: block;
   pointer-events: none;
+  animation: kopi-wobble 4s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+.kopi-float:hover img {
+  animation: none;
+  transform: rotate(0deg);
 }
 .kopi-ring {
   position: absolute;
@@ -646,6 +652,16 @@ footer {
 @keyframes kopi-float {
   0%, 100% { transform: translateY(0); }
   50%       { transform: translateY(-7px); }
+}
+@keyframes kopi-wobble {
+  0%, 55%          { transform: rotate(0deg); }
+  58%              { transform: rotate(-18deg); }
+  61%              { transform: rotate(16deg); }
+  64%              { transform: rotate(-12deg); }
+  67%              { transform: rotate(10deg); }
+  70%              { transform: rotate(-6deg); }
+  73%              { transform: rotate(4deg); }
+  76%, 100%        { transform: rotate(0deg); }
 }
 
 @media (max-width: 720px) {
