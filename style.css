@@ -614,9 +614,40 @@ footer {
   animation: kopi-float 3.5s ease-in-out infinite;
   transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
+.kopi-label {
+  position: absolute;
+  right: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%) translateX(8px);
+  background: #be1e2d;
+  color: #fff;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 8px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.kopi-label::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -5px;
+  transform: translateY(-50%);
+  border: 5px solid transparent;
+  border-left-color: #be1e2d;
+  border-right: 0;
+}
 .kopi-float:hover {
   transform: scale(1.12);
   animation: none;
+}
+.kopi-float:hover .kopi-label {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
 }
 .kopi-float:hover .kopi-ring {
   animation: none;
@@ -673,4 +704,5 @@ footer {
     cursor: auto;
   }
   .kopi-float img { width: 24px; height: 24px; }
+  .kopi-label { display: none; }
 }
